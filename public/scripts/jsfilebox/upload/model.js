@@ -2,6 +2,7 @@ import {view} from "./view.js"
 "use strict"
 
 export const model ={
+  url: "/jsfilebox/node/register",
   dragOver:{
     execute:function(){
       view.elements.fileReadArea.className = "dragOver" 
@@ -17,14 +18,29 @@ export const model ={
   drop:{
     execute:function(e){
       view.elements.fileReadArea.className = "drop" 
-      view.elements.dragAndDropText.textContent = "Finish Registering Your File"
+      const url = model.url
       const files = e.dataTransfer.files
-      const f = files[0]
-      const reader = new FileReader()
-      const readFile = this.makeReadFile(f)
-      reader.onload = readFile
-      reader.readAsBinaryString(f)
-
+      const file = files[0]
+      const formData = new FormData()
+      formData.append("myFile", file)
+      const data = {
+        body: formData,
+        method: "POST",
+      }
+      const send = async()=>{
+        const response = await fetch(url, data)
+        const json = await response.json()
+        if(json.results){
+          view.elements.url.value = json.url 
+          view.elements.dragAndDropText.textContent = "Finished Registering Your File"
+        }
+        else {
+          view.elements.url.value = "" 
+          view.elements.dragAndDropText.textContent = "Failed Registering"
+        }
+        console.log(json)
+      }       
+      send()
     },
     makeReadFile:function(f){
       return (e)=>{

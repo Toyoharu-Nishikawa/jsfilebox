@@ -117,4 +117,5 @@ main >article.fileRead >section.drop {
 main >article.fileRead >section>p {
   font-size: 20pt;
   color:#AAAAAA;
+  margin:0;
 }

@@ -35,6 +35,9 @@ export const control = {
     bodyexecute:function(e){
       e.preventDefault() 
     },
+    dragAndDropTextexecute:function(e){
+      e.preventDefault() 
+    },
     execute:function(e){
       e.preventDefault() 
       e.stopPropagation()
@@ -42,6 +45,7 @@ export const control = {
     },
     add:function(){
       view.elements.body.ondrop = this.bodyexecute
+      view.elements.dragAndDropText.ondrop = this.dragAndDropTextexecute
       view.elements.fileReadArea.ondrop = this.execute
     },
   },
