@@ -5,6 +5,6 @@ export const view = {
     body: document.body,
     url: document.getElementById("url"),
     fileReadArea: document.getElementById("fileReadArea"),
-    dragAndDropText: document.getElementById("dragAndDropText"),
+    message: document.getElementById("message"),
   }
 }

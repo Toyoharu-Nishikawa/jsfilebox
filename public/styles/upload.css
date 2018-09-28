@@ -16,15 +16,20 @@ header {
 }
 
 header > div {
+}
+header > div >a{
+  margin: 0;
+  padding: 0;
+  text-decoration:none;
   display:flex;
 }
-header > div > h1 {
+header > div >a> h1 {
   color: #3e5358;
   margin: 0;
   padding: 10px 10px ;
 }
 
-header > div > img {
+header > div >a> img {
   margin: 10px 5px 5px 5px;
   width:40px;
   height:40px;
@@ -89,6 +94,18 @@ main >article.URL>section>input  {
   width:400px;
 } 
 
+main >article.message  {
+  display:flex; 
+  justify-content:center;
+  margin:5px;
+  padding:0;
+}
+main >article.message>p  {
+  margin:0px;
+  padding:0px;
+  height:10px;
+}
+ 
 main >article.fileRead  {
   display:flex; 
   justify-content:center;
@@ -106,6 +123,8 @@ main >article.fileRead >section {
 } 
 main >article.fileRead >section.notYet {
   background:#FFFFFF;
+  font-size: 20pt;
+  color:#AAAAAA;
 }
 main >article.fileRead >section.dragOver {
   background:#FFDBC9;

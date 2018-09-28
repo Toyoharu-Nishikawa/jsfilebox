@@ -20,6 +20,7 @@ export const control = {
   dragLeave:{
     bodyexecute:function(e){
       e.preventDefault() 
+      e.stopPropagation()
     },
     execute:function(e){
       e.preventDefault() 
@@ -34,9 +35,7 @@ export const control = {
   drop:{
     bodyexecute:function(e){
       e.preventDefault() 
-    },
-    dragAndDropTextexecute:function(e){
-      e.preventDefault() 
+      e.stopPropagation()
     },
     execute:function(e){
       e.preventDefault() 
@@ -45,7 +44,6 @@ export const control = {
     },
     add:function(){
       view.elements.body.ondrop = this.bodyexecute
-      view.elements.dragAndDropText.ondrop = this.dragAndDropTextexecute
       view.elements.fileReadArea.ondrop = this.execute
     },
   },
