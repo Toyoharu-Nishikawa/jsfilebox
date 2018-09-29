@@ -1,3 +1,5 @@
 public/files/*
+src/uploads/*
 *.swp
 !public/files/ReadMe.md
+!src/uploads/ReadMe.md
