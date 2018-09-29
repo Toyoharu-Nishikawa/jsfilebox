@@ -38,8 +38,8 @@ export const model ={
           fileReadAreaElem.appendChild(img)
         }
         else{
-          const div = document.createElement("embed")
-          div.src= event.target.result
+          const div = document.createElement("object")
+          div.data= event.target.result
           div.style.width = "500px"
           div.style.height = "400px"
           div.style.background="white"
