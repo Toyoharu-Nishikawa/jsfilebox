@@ -41,10 +41,7 @@ header > ul  {
   padding:0;
 }
 header > ul > li {
-  color: #3e5358;
-  border: 1px solid #1495b5;
-  border-radius: 6px 6px 6px 6px;
-  margin: 15px 20px 10px 50px;
+ margin: 15px 20px 10px 50px;
   padding: 1px 10px 1px 10px;
   height: 30px;
   text-align:center;
@@ -52,9 +49,13 @@ header > ul > li {
 header > ul > li > a {
   text-decoration:none;
   color: #3e5358;
+  padding: 5px 10px 5px 10px;
+  border: 1px solid #1495b5;
+  border-radius: 6px 6px 6px 6px;
+  color: #3e5358;
 }
  
-header > ul >  li:hover {
+header > ul > li >a:hover {
   background: #1495b5;
   color: #F5FFFA;
   transition: 1.2s;
@@ -137,4 +138,7 @@ main >article.fileRead >section>p {
   font-size: 20pt;
   color:#AAAAAA;
   margin:0;
+}
+object {
+  pointer-events:none;
 }

@@ -41,7 +41,10 @@ export const model ={
     console.log(result)
     const fragment = document.createDocumentFragment()
     const elemList = result.map(v=>{
+      const a = document.createElement("a")
+      a.href = v.url
       const li = document.createElement("li")
+      a.appendChild(li)
       const filetypeIsImage = v.filetype.indexOf("image")===0?true:false
       if(filetypeIsImage){
         const img = document.createElement("img")
@@ -51,14 +54,14 @@ export const model ={
         li.appendChild(img)
       }
       else{
-        const div = document.createElement("embed")
-        div.src= v.url 
+        const div = document.createElement("object")
+        div.data= v.url 
         div.style.width = "200px"
         div.style.height = "160px"
         div.style.background="white"
         li.appendChild(div)
       }
-      return li
+      return a 
     })
     elemList.forEach(v=>{
       fragment.appendChild(v)
