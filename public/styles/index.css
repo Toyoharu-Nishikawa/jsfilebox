@@ -96,3 +96,33 @@ main > article > ul>a >li:hover {
 object {
   pointer-events:none;
 }
+
+article.pagination{
+  text-align:center;
+}
+
+nav {
+  display:inline-block;
+}
+
+
+nav > a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+nav > a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+nav> a:hover:not(.active) {
+  background-color: #ddd;
+}
+
+nav.pageNotFound {
+  font-size: 40px;
+  color: #CCCCCC;
+}
