@@ -1,15 +1,20 @@
 import {view} from "./view.js"
+import {parseParam,setParam} from "../..//parseParam/parseParam.js"
 
 "use strict"
 
+
 export const model ={
   findURL: "/jsfilebox/node/find",
+  numberOfPagination: 5,
   initialize:function(){
     const url = model.findURL
     const userEmail = localStorage.getItem("userEmail")
+    const paramMap = parseParam() 
+    const page = paramMap.has("page")?parseInt(paramMap.get("page")):1
     const param = {
       userEmail:userEmail,
-      page:1,
+      page:page,
     }
 
     const data = {
@@ -26,7 +31,10 @@ export const model ={
       try{
         const response = await fetch(url, data)
         const json = await response.json()
-        console.log(json.result)
+        if(!json.flag){
+          throw new Error("server is not working now")
+        }
+        model.makePagination(page,json.count,json.imagesInPage)
         model.draw(json.result)
       }
       catch(e){
@@ -35,6 +43,49 @@ export const model ={
     } 
     main()
     
+  },
+  makePagination: function(page, count,imagesInPage){
+    const paginationElem = view.elements.pagination
+    const numberOfPagination = this.numberOfPagination
+    const half = (numberOfPagination/2)|0 
+    const totalPages = (count/imagesInPage|0)+1
+    const previousFlag = page>1
+    const nextFlag = page < totalPages
+    const pagePreList = [...Array(numberOfPagination)].map((v,i)=>page+i-half)
+    const pageList = pagePreList.filter(v=>v>0&&v<=totalPages)
+    console.log(count,totalPages,imagesInPage)
+    const index = pageList.indexOf(page)
+    if(index<0){
+      paginationElem.innerHTML="page is not found" 
+      paginationElem.className = "pageNotFound"
+      return 
+    }
+    const fragment = document.createDocumentFragment() 
+    const elements = pageList.map((v,i)=>{
+      const elem = document.createElement("a") 
+      elem.textContent = v
+      elem.href=`?page=${v}`
+      if(i===index){
+        elem.className = "active"
+      }
+      return elem
+    })  
+    if(previousFlag){
+      const elem = document.createElement("a") 
+      elem.innerHTML = "&laquo;"
+      elem.href=`?page=${page-1}`
+      elements.unshift(elem)
+    }
+    if(nextFlag){
+      const elem = document.createElement("a") 
+      elem.innerHTML = "&raquo;"
+      elem.href=`?page=${page+1}`
+      elements.push(elem)
+    }
+    elements.forEach(v=>{
+      fragment.appendChild(v) 
+    })
+    pagination.appendChild(fragment)
   },
   draw:function(result){
     const listElem = view.elements.list

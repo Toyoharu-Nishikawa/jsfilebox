@@ -12,6 +12,7 @@ const assert = require('assert')
 
 const log = require('log');
 
+const imagesInPage = 30
 
 try{
   fs.accessSync("/var/log/node");
@@ -66,27 +67,36 @@ const save = (root,dir,saveFilename,tmpPath) =>{
 
 app.all('/node/find',(request,response)=>{
   const userEmail = request.body.userEmail
+  const page = parseInt(request.body.page)
   //const page = request.body.page
   let client = null
   const main = async()=>{
     try{ 
-      client = await MongoClient.connect(mongoURL)
+      client = await MongoClient.connect(mongoURL,{useNewUrlParser:true})
       const db = client.db("files")
       const collection = db.collection("url");
       
+      const count = await collection.estimatedDocumentCount()
+
       const result = await collection.find({
         //userEmail: userEmail,
         //url:url,
       },{projection:{url:1,filename:1,filetype:1,_id:0}})
       .sort({uploadTime:-1})
-      .limit(30)
+      .skip((page-1)*imagesInPage)
+      .limit(imagesInPage)
       .toArray()
-                              
-     
-      response.json({results:true, result:result})
+      
+      const obj= {
+        flag:true, 
+        result:result,
+        count:count,
+        imagesInPage:imagesInPage
+      }
+      response.json(obj)
     }
     catch(e){
-      response.json({results:false})
+      response.json({flag:false})
     }
     finally{
       client.close()
