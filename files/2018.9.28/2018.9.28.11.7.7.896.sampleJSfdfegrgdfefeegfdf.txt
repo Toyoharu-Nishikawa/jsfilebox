@@ -1,0 +1,2 @@
+﻿const y = x.map(v=>v**2).reduce((pre,current)=>pre+current,0)
+return y

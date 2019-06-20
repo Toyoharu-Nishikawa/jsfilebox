@@ -1,1 +1,1 @@
-temporary upload directory
+temporary directory
