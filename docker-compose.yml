@@ -8,26 +8,23 @@ services:
     networks:
       - default
   api:
-    image: node:alpine
+    build:
+      context: ./
+      dockerfile: ./api/Dockerfile
     restart: always 
     environment:
       - DB_ADDR=mongo
     volumes:
-      - ./src:/usr/src
       - ./files:/usr/share/nginx/html/files
-      - /var/log/jsfilebox:/var/log/node
-    working_dir: '/usr/src'
-    command: npm start
     networks:
       - default
   web:
-    image: nginx:alpine
+    build:
+      context: ./
+      dockerfile: ./web/Dockerfile
     restart: always 
     volumes:
       - ./files:/usr/share/nginx/html/files
-      - ./public:/usr/share/nginx/html
-      - ./conf.d:/etc/nginx/conf.d
-      - /var/log/jsfilebox:/var/log/nginx
     networks:
       - neco_link
       - default
