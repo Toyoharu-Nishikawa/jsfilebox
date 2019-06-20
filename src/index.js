@@ -7,7 +7,12 @@ const maxSize = 50*1000*1000
 const upload = multer({dest:"./uploads/", limits:{fileSize:maxSize}});
 const fs = require('fs')
 const fsp = fs.promises
- 
+
+const db_addr = process.env.hasOwnProperty("DB_ADDR")? process.env.DB_ADDR :
+  "mongo:27017"
+
+const mongoURL = `mongodb://${db_addr}`
+
 const assert = require('assert')
 
 const log = require('log');
@@ -31,7 +36,6 @@ app.use(bodyParser.json({
 }));
 
 
-const mongoURL = 'mongodb://mongo:27017';
 const root = "/usr/share/nginx/html/files" 
 
 app.set('port', 5000);

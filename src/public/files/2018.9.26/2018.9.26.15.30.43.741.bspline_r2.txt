@@ -1,0 +1,158 @@
+﻿const x = [0, 0.9, 1.5, 2.0, 2.9, 4]  
+const y = [1, 1.2, 1.5, 3.0, 2.5, 3]  
+
+const knots = [0,0,0,1,2,3,4,4,4] 
+const order = 3
+
+
+const search = (knots,order, x)=>{
+  const index= knots.slice(0, -order)
+    .reduce((pre,current,index)=>current <= x ? index:pre, 0)
+  return index
+}
+
+const updateN = (N, knots, x, m, i)=>{
+  
+  const beta1 = knots.length-1 <m+i ? 0:
+    N.length-1 <i ? 0:
+    knots[m+i-1] === knots[i] ? 0:
+    (x-knots[i])/(knots[m+i-1] - knots[i])*N[i]
+    
+  const beta2 = knots.length-1 <m+i ? 0:
+    N.length-1 <i+1 ? 0:
+    knots[m+i] === knots[i+1] ? 0:
+    (knots[m+i]-x)/(knots[m+i]-knots[i+1])*N[i+1]
+    
+  const newN = beta1+beta2 
+
+  return newN
+}
+
+const makeN = (knots, order,num, x) => {
+  const index = search(knots, order, x)
+  const N1 =[...Array(num)].map((v,i)=>i===index?1:0)
+  const N = [...Array(order-1)].reduce((pre,current,m)=>{
+    return pre.map((v,i,arr)=>updateN(arr, knots, x, m+2,i))
+  },N1)
+  return N
+}
+
+const solvLinEqGauss = (A, Va) =>{
+  const nrc = Va.length
+
+  const va = [].concat(Va)
+  const m = A.map(a=>[].concat(a))
+  const vx = [...Array(nrc)].fill(0)
+
+	for (let i=0;i<nrc;i++){
+		for(let j=i+1;j<nrc;j++){ /* ピボット選択（初項の絶対値が最大の行を一番上に持ってくる） */
+			if(m[i][i]*m[i][i]<m[j][i]*m[j][i]){
+				let temp = va[i];
+				va[i] = va[j];
+				va[j] = temp;
+				for(k=i;k<nrc;k++){
+					temp = m[i][k];
+					m[i][k] = m[j][k];
+					m[j][k] = temp;
+				}
+			}
+		}
+		/* i行目を1/m[i][i]倍 */
+		const div = m[i][i];
+		va[i] /=div;
+		for(let j=i;j<nrc;j++)
+			m[i][j] /= div;
+		/* j行目からi行目のm[j][i]倍を引く */
+		for(let j=i+1;j<nrc;j++){ 
+			const unko = m[j][i];
+			va[j] -= unko*va[i];
+			for(k=i;k<nrc;k++)
+				m[j][k] -= unko*m[i][k];
+		}
+	}
+	/* 後退代入により解を求める */
+	vx[nrc-1] = va[nrc-1];
+	for (j=2;j<=nrc;j++){
+		let sum = 0;
+		for(i = nrc-j+1;i<nrc;i++)
+			sum += vx[i]*m[nrc-j][i];
+		vx[nrc-j] = va[nrc-j] - sum;
+	}
+	return vx
+}
+
+const bspline = (x, y, order=4, k)=>{
+  const knots = typeof k !=="undefined" ? k:
+    [].concat(
+      Array(order).fill(x[0]),
+      Array(x.length-order).fill(0).map((v,i)=>(i+1)*(x[x.length-1]-x[0])/(x.length-order+1)),
+      Array(order).fill(x[x.length-1])
+    )
+  const A = x.map((value, i, arr) => makeN(knots, order, arr.length, value))
+  console.log(A)
+
+  const c = solvLinEqGauss(A, y)
+  console.log(c)
+
+  const num = x.length 
+
+  return (x0)=>{ 
+    const N = makeN(knots, order,num, x0)
+    const y0 = N.reduce((pre, current, i)=>pre+current*c[i],0)
+    return y0
+  }
+}
+
+//const btest = bspline(x, y, order, knots)
+const btest = bspline(x, y,4)
+const x0 = [...Array(41)].map((v,i)=>i*0.1) 
+const y0 = x0.map(btest) 
+
+
+const trace1 = {
+  x: x, 
+  y: y, 
+  marker: {size: 8}, 
+  mode: 'markers', 
+  name: 'original ', 
+  type: 'scatter', 
+}
+
+const trace2 = {
+  x: x0, 
+  y: y0, 
+  marker: {size: 2}, 
+  mode: 'lines+markers', 
+  name: 'b-spline ', 
+  type: 'scatter', 
+}
+
+const data = [trace1, trace2];
+const layout = {
+  autosize: true, 
+  height: 500, 
+  title: 'b-spline', 
+  width: 800, 
+  xaxis: {
+    autorange: true, 
+    range: [-0.311870828316, 1.57198017709], 
+    title: 'x-Position [-]', 
+    type: 'linear'
+  }, 
+  yaxis: {
+    autorange: true, 
+    range: [0.843707551597, 1.39348656789], 
+    title: 'y-Position [-]', 
+    type: 'linear'
+  }
+};
+Plotly.newPlot('draw',data, layout,{
+    editable: true,
+    scrollZoom: true,
+    showLink: false,
+    displaylogo: false,
+    modeBarButtonsToRemove: ['sendDataToCloud']
+  }
+);
+
+

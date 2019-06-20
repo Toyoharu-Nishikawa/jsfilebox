@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>jsfilebox</title>
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="./styles/upload.css">
+
+ <script defer type="module" src="./scripts/upload.js"></script>
+</head>
+<body>
+  <header>
+    <div class="title">
+      <a href="/jsfilebox/"> 
+        <h1>jsFileBox</h1>
+        <img src="./images/box.svg">
+      </a>
+    </div>
+    <ul>
+      <li id="close">
+        <a href="./">close</a>
+      </li>
+    </ul>
+  </header>
+  <main>
+    <article class="URL">
+      <section>
+        <p>URL:</p>
+        <input id="url" type-"text" readonly value="/jsfilebox/">
+      </section>
+    </article>
+    <article class="message">
+      <p id="message"></p>
+    </article>
+    <article class="fileRead" >
+      <section class="notYet" id="fileReadArea">
+        Drag & Drop Your File
+      </section>
+    </article>
+  </main>
+
+</body>
+</html>
