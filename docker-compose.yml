@@ -3,27 +3,28 @@ services:
   mongo:
     image: mongo
     restart: always
-    ports:
-      - "27019:27017"
     volumes:
       - /var/data/jsfilebox_mongo/db:/data/db
     networks:
       - default
-  node:
+  api:
     image: node:alpine
     restart: always 
+    environment:
+      - DB_ADDR=mongo
     volumes:
       - ./src:/usr/src
-      - ./public/files:/usr/share/nginx/html/files
+      - ./files:/usr/share/nginx/html/files
       - /var/log/jsfilebox:/var/log/node
     working_dir: '/usr/src'
     command: npm start
     networks:
       - default
-  nginx:
+  web:
     image: nginx:alpine
     restart: always 
     volumes:
+      - ./files:/usr/share/nginx/html/files
       - ./public:/usr/share/nginx/html
       - ./conf.d:/etc/nginx/conf.d
       - /var/log/jsfilebox:/var/log/nginx
